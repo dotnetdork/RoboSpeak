@@ -27,48 +27,41 @@ ORANGE = "\033[33m"
 WHITE = "\033[97m"
 RESET = "\033[0m"
 
+# Global Variable to remember the current robot splash art
+current_robot = ""
+
+def pick_random_art():
+    global current_robot
+    folder_path = "/home/pi/RoboSpeak/ascii_art/"
+    try:
+        all_items = os.listdir(folder_path)
+        valid_files = [f for f in all_items if f.endswith(".txt")]
+        if valid_files:
+            # Save the choice so it persists
+            current_robot = os.path.join(folder_path, random.choice(valid_files))
+    except Exception as e:
+        print(f"Error picking art: {e}")
+
+# Pick the first robot immediately when the script starts
+pick_random_art()
+
 # Function to display ASCII art with random character colors
 def display_art():
-    folder_path = "/home/pi/RoboSpeak/ascii_art/"
     colors = [RED, GREEN, YELLOW, BLUE, PINK, CYAN]
     
+    if not current_robot:
+        return
+
     try:
-        # Get all files in the folder
-        all_items = os.listdir(folder_path)
-        
-        # Filter to only include .txt files
-        valid_files = [f for f in all_items if f.endswith(".txt")]
-
-        # Check if the folder is empty of .txt files
-        if not valid_files:
-            print(f"\n[Warning: No .txt files found in {folder_path}]")
-            return
-
-        # Pick a random file and build the full path
-        chosen_file = random.choice(valid_files)
-        path = os.path.join(folder_path, chosen_file)
-
-        # Read and color the art
-        with open(path, "r") as f:
+        with open(current_robot, "r") as f:
             art = f.read()
-            
-            if not art:
-                print(f"\n[Warning: {chosen_file} is empty!]")
-            else:
-                colored_art = ""
-                for char in art:
-                    if char.isspace():
-                        # Keep spaces/newlines as they are so the shape doesn't break
-                        colored_art += char
-                    else:
-                        # Give every single character a random color
-                        colored_art += f"{random.choice(colors)}{char}"
-                
-                # Print the final product and reset the color at the end
-                print(colored_art + RESET)
-                
-    except FileNotFoundError:
-        print(f"\n[Error: The folder {folder_path} does not exist.]")
+            colored_art = ""
+            for char in art:
+                if char.isspace():
+                    colored_art += char
+                else:
+                    colored_art += f"{random.choice(colors)}{char}"
+            print(colored_art + RESET)
     except Exception as e:
         print(f"\n[Error: {e}]")
 
@@ -88,11 +81,11 @@ def display_header():
 
     # Re-display the Robot
     print("")
-    display_art("robot_0.txt")
+    display_art()
     
     # Re-display the Menu in Green
     print(f"\n{GREEN}--- RoboSpeak (PiCar-X Speech System) ---")
-    print(f"System: '{CYAN}/clear{GREEN}'")
+    print(f"System: '{CYAN}/clear{GREEN}', '{CYAN}/shuffle{GREEN}'")
     print(f"Voices: '{CYAN}/titan{GREEN}', '{CYAN}/glitch{GREEN}', '{CYAN}/android{GREEN}', '{CYAN}/stealth{GREEN}', '{CYAN}/reset{GREEN}'")
     print(f"{GREEN}Phrases: '{CYAN}:hello:{GREEN}', '{CYAN}:inspire:{GREEN}'")
     print(f"\n{GREEN}Type '{WHITE}exit{GREEN}' and {PINK}ENTER{GREEN} or press '{PINK}CTRL{GREEN}' + '{PINK}C{GREEN}' to quit.{RESET}")
@@ -141,7 +134,7 @@ startup_speak("Hello I am RoboSpeak. Together we will dominate the planet.")
 
 # Display Terminal Information with custom coloring
 print(f"\n{GREEN}--- RoboSpeak (PiCar-X Speech System) ---")
-print(f"System: '{CYAN}/clear{GREEN}'")
+print(f"System: '{CYAN}/clear{GREEN}', '{CYAN}/shuffle{GREEN}'")
 print(f"Voices: '{CYAN}/titan{GREEN}', '{CYAN}/glitch{GREEN}', '{CYAN}/android{GREEN}', '{CYAN}/stealth{GREEN}', '{CYAN}/reset{GREEN}'")
 print(f"{GREEN}Phrases: '{CYAN}:hello:{GREEN}', '{CYAN}:inspire:{GREEN}'")
 print(f"\n{GREEN}Type '{WHITE}exit{GREEN}' and {PINK}ENTER{GREEN} or press '{PINK}CTRL{GREEN}' + '{PINK}C{GREEN}' to quit.{RESET}")
@@ -167,6 +160,11 @@ try:
         elif user_text.lower() == '/clear':
             display_header()
             speak("Chat cleared.")
+
+        elif user_text.lower() == '/shuffle':
+            pick_random_art() # Pick a new one
+            display_header()  # Refresh the screen
+            speak("New chassis selected.")
 
         elif user_text.lower() == '/titan':
             tts.set_pitch(20)
