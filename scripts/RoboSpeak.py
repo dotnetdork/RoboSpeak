@@ -29,7 +29,7 @@ RESET = "\033[0m"
 
 # Function to display ASCII art with random character colors
 def display_art():
-    folder_path = "/home/pi/ascii_art/"
+    folder_path = "/home/pi/RoboSpeak/ascii_art/"
     colors = [RED, GREEN, YELLOW, BLUE, PINK, CYAN]
     
     try:
