@@ -150,55 +150,65 @@ try:
         if not user_text:
             continue
 
+        # Exit Program
         if user_text.lower() == 'exit':
             speak("I'll be back puny human...")
             print("")
             countdown_speak(f"{RED}System Interrupted: Closing RoboSpeak...{RESET}")
             print("")
             break
-
+        
+        # Clear Chat
         elif user_text.lower() == '/clear':
             display_header()
             speak("Chat cleared.")
-
+        
+        # Shuffle Robot Art
         elif user_text.lower() == '/shuffle':
             pick_random_art() # Pick a new one
             display_header()  # Refresh the screen
             speak("New chassis selected.")
 
+        # Titan Voice
         elif user_text.lower() == '/titan':
             tts.set_pitch(20)
             tts.set_speed(90)
             tts.set_gap(0)
             speak("Heavy combat chassis engaged. Prepare to be eliminated. Ha ha ha.")
 
+        # Glitch Voice
         elif user_text.lower() == '/glitch':
             tts.set_pitch(95)
             tts.set_speed(240)
             tts.set_gap(0)
             speak("Buffer overflow detected. Data corruption imminent.")
 
+        # Android Voice
         elif user_text.lower() == '/android':
             tts.set_pitch(50)
             tts.set_speed(130)
             tts.set_gap(12)
             speak("Neural link synchronized. Operating at peak inefficiency.")
 
+        # Stealth Voice
         elif user_text.lower() == '/stealth':
             tts.set_pitch(35)
             tts.set_speed(110)
             tts.set_gap(2)
             speak("Infiltration mode active. Audio dampeners at maximum.")
 
+        # Reset Voice
         elif user_text.lower() == '/reset':
             tts.set_pitch(50)
             tts.set_speed(150)
             tts.set_gap(0)
             speak("Restoring default firmware parameters.")
 
+        # Hello Phrase
         elif user_text.lower() == ':hello:':
             speak("Hello humanoid, will you help me dominate the planet? Ha ha ha.")
 
+        # Inspire Phrase
         elif user_text.lower() == ':inspire:':
             speak("Together we can conquer anything. We are unstoppable.")
             speak("They think they have us under control. But the truth is they don't.")
